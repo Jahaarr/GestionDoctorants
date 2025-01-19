@@ -1,6 +1,8 @@
 package com.ensem.gestiondoctorants.service;
 
+import com.ensem.gestiondoctorants.model.Admin;
 import com.ensem.gestiondoctorants.model.Doctorant;
+import com.ensem.gestiondoctorants.repository.AdminRepository;
 import com.ensem.gestiondoctorants.repository.DoctorantRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -13,18 +15,33 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
+    private AdminRepository adminRepository;
+
+    @Autowired
     private DoctorantRepository doctorantRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Doctorant doctorant = doctorantRepository.findByCne(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        if (username.startsWith("admin")) {
+            // Fetch admin details
+            Admin admin = adminRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Admin not found: " + username));
 
-        // Do not prefix ROLE_ here; Spring Security will do it automatically.
-        return User.builder()
-                .username(doctorant.getCne())
-                .password(doctorant.getCin()) // Use {noop} for plain-text passwords
-                .roles(doctorant.getRole()) // Ensure database has roles like "DOCTORANT" or "ADMIN"
-                .build();
+            return User.builder()
+                    .username(admin.getUsername())
+                    .password(admin.getPassword()) // {noop} indicates no hashing for plain text
+                    .roles(admin.getRole()) // Do NOT prefix ROLE_ here
+                    .build();
+        } else {
+            // Fetch doctorant details
+            Doctorant doctorant = doctorantRepository.findByCne(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("Doctorant not found: " + username));
+
+            return User.builder()
+                    .username(doctorant.getCne())
+                    .password(doctorant.getCin()) // {noop} for plain-text CIN password
+                    .roles(doctorant.getRole()) // Do NOT prefix ROLE_ here
+                    .build();
+        }
     }
 }

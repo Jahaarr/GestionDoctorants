@@ -1,7 +1,6 @@
 package com.ensem.gestiondoctorants.config;
 
 import com.ensem.gestiondoctorants.service.CustomUserDetailsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,27 +13,30 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Updated CSRF configuration
+                .csrf(csrf -> csrf.disable()) // Disable CSRF for development (enable in production if needed)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/doctorant/**").hasRole("DOCTORANT")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/doctorant/**").hasRole("DOCTORANT") // Doctorant routes
+                        .requestMatchers("/admin/**").hasRole("ADMIN") // Admin routes
+                        .anyRequest().authenticated() // All other routes require authentication
                 )
                 .formLogin(login -> login
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/default", true)
-                        .permitAll()
+                        .loginPage("/login") // Custom login page
+                        .defaultSuccessUrl("/default", true) // Redirect based on role
+                        .permitAll() // Allow access to the login page
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
+                        .logoutUrl("/logout") // URL for logout
+                        .logoutSuccessUrl("/login?logout") // Redirect after logout
+                        .permitAll() // Allow all users to access logout
                 );
         return http.build();
     }
@@ -46,6 +48,6 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // BCrypt encoder for secure passwords
     }
 }
