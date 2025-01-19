@@ -1,15 +1,65 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Doctorant Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/styles.css}">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+    }
+    header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    h1 {
+      margin: 0;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      margin: 1rem 0;
+    }
+    a {
+      text-decoration: none;
+      color: #4CAF50;
+      font-weight: bold;
+    }
+    a:hover {
+      color: #45a049;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
-<h1>Bienvenue, Doctorant!</h1>
-<ul>
-  <li><a th:href="@{/doctorant/profile}">Consulter vos informations</a></li>
-  <li><a th:href="@{/doctorant/academic-data}">Saisir des données académiques</a></li>
-  <li><a th:href="@{/doctorant/document-requests}">Demander des documents</a></li>
-  <li><a th:href="@{/logout}">Déconnexion</a></li>
-</ul>
+<header>
+  <h1>Bienvenue, Doctorant!</h1>
+</header>
+<div class="container">
+  <h2>Votre espace personnel</h2>
+  <ul>
+    <li><a th:href="@{/doctorant/profile}">Consulter vos informations personnelles</a></li>
+    <li><a th:href="@{/doctorant/academic-data}">Saisir et consulter vos données académiques</a></li>
+    <li><a th:href="@{/doctorant/document-requests}">Effectuer une demande de documents</a></li>
+    <li><a th:href="@{/doctorant/progress}">Voir l'avancement de vos étapes de soutenance</a></li>
+    <li><a th:href="@{/doctorant/claims}">Signaler une erreur ou soumettre une réclamation</a></li>
+    <li><a th:href="@{/logout}">Déconnexion</a></li>
+  </ul>
+</div>
 </body>
 </html>

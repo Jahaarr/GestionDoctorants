@@ -24,9 +24,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if (username.startsWith("admin")) {
             // Fetch admin details
-            Admin admin = adminRepository.findByUsername(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Admin not found: " + username));
-
+            Admin admin = adminRepository.findByUsername(username);
+            if (admin == null) {
+                throw new UsernameNotFoundException("Admin not found: " + username);
+            }
             return User.builder()
                     .username(admin.getUsername())
                     .password(admin.getPassword()) // {noop} indicates no hashing for plain text
@@ -34,9 +35,10 @@ public class CustomUserDetailsService implements UserDetailsService {
                     .build();
         } else {
             // Fetch doctorant details
-            Doctorant doctorant = doctorantRepository.findByCne(username)
-                    .orElseThrow(() -> new UsernameNotFoundException("Doctorant not found: " + username));
-
+            Doctorant doctorant = doctorantRepository.findByCne(username);
+            if (doctorant == null) {
+                throw new UsernameNotFoundException("Doctorant not found: " + username);
+            }
             return User.builder()
                     .username(doctorant.getCne())
                     .password(doctorant.getCin()) // {noop} for plain-text CIN password
