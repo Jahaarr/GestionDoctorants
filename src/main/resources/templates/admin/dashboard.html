@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Admin Dashboard</title>
+</head>
+<body>
+<h1>Bienvenue, Administrateur!</h1>
+<ul>
+  <li><a th:href="@{/admin/import-export}">Importer/Exporter des données</a></li>
+  <li><a th:href="@{/admin/manage-doctorants}">Gérer les doctorants</a></li>
+  <li><a th:href="@{/admin/edit-documents}">Éditer des documents personnalisés</a></li>
+  <li><a th:href="@{/logout}">Déconnexion</a></li>
+</ul>
+</body>
+</html>

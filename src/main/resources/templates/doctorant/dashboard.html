@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Doctorant Dashboard</title>
+</head>
+<body>
+<h1>Bienvenue, Doctorant!</h1>
+<ul>
+  <li><a th:href="@{/doctorant/profile}">Consulter vos informations</a></li>
+  <li><a th:href="@{/doctorant/academic-data}">Saisir des données académiques</a></li>
+  <li><a th:href="@{/doctorant/document-requests}">Demander des documents</a></li>
+  <li><a th:href="@{/logout}">Déconnexion</a></li>
+</ul>
+</body>
+</html>
