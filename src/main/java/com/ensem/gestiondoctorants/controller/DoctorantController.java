@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @Controller
 public class DoctorantController {
@@ -35,6 +36,9 @@ public class DoctorantController {
 
     @Autowired
     private ClaimRepository claimRepository;
+
+    @Autowired
+    private ProgressRepository progressRepository;
 
     // Dashboard view for a logged-in Doctorant
     @GetMapping("/doctorant/dashboard")
@@ -167,4 +171,13 @@ public class DoctorantController {
         claimRepository.save(claim); // Save the claim to the database
         return "redirect:/doctorant/claims?success";
     }
+    // Show the progress page
+    @GetMapping("/doctorant/progress")
+    public String showProgressPage(Model model) {
+        // Fetch all progress steps (replace with specific doctorant logic if needed)
+        List<Progress> progressSteps = progressRepository.findAll();
+        model.addAttribute("progressSteps", progressSteps);
+        return "doctorant/progress";
+    }
+
 }

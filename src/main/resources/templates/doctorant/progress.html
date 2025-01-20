@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Avancement des étapes de soutenance</title>
+  <style>
+    :root {
+      --primary-color: #B4197D;
+      --primary-light: #d81b90;
+      --secondary-color: #1A237E;
+      --background-start: #f8f9fe;
+      --background-end: #e8eaf6;
+      --input-background: #ffffff;
+      --text-dark: #2c3e50;
+      --text-light: #ffffff;
+      --shadow-color: rgba(26, 35, 126, 0.1);
+      --border-color: #e1e8f0;
+      --table-header-bg: #f8f9fe;
+      --table-row-hover: #f5f6fa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--background-start), var(--background-end));
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--input-background);
+      padding: 2.5rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px var(--shadow-color),
+      0 2px 10px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 1000px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .accent-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    h1 {
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      margin: 2rem 0;
+      border-radius: 12px;
+      border: 2px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--input-background);
+    }
+
+    th, td {
+      padding: 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background: var(--table-header-bg);
+      color: var(--text-dark);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr {
+      transition: background-color 0.3s ease;
+    }
+
+    tbody tr:hover {
+      background-color: var(--table-row-hover);
+    }
+
+    .status-cell {
+      font-weight: 500;
+    }
+
+    .status-complete {
+      color: #2ecc71;
+    }
+
+    .status-pending {
+      color: #f39c12;
+    }
+
+    .status-not-started {
+      color: #e74c3c;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: var(--primary-color);
+      transform: translateX(-5px);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1.5rem;
+        margin: 1rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      th, td {
+        padding: 1rem;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      th, td {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="accent-border"></div>
+  <h1>Avancement des étapes de soutenance</h1>
+
+  <div class="table-container">
+    <table>
+      <thead>
+      <tr>
+        <th>Étape</th>
+        <th>Statut</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="step : ${progressSteps}">
+        <td th:text="${step.stepName}"></td>
+        <td th:class="${'status-cell ' +
+                            (step.status == 'Terminé' ? 'status-complete' :
+                             (step.status == 'En cours' ? 'status-pending' : 'status-not-started'))}"
+            th:text="${step.status}">
+        </td>
+        <td th:text="${step.description}"></td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a th:href="@{/doctorant/dashboard}" class="back-link">← Retour au tableau de bord</a>
+</div>
+</body>
+</html>
