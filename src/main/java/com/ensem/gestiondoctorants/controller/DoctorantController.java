@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -65,5 +67,31 @@ public class DoctorantController {
         // Save the doctorant's information to the database
         doctorantRepository.save(doctorant);
         return "redirect:/doctorant/dashboard"; // Redirect to the dashboard after registration
+    }
+    // Show document requests page
+    @GetMapping("/doctorant/document-requests")
+    public String showDocumentRequestsPage() {
+        return "doctorant/document-requests";
+    }
+
+    // Handle standard document requests
+    @PostMapping("/doctorant/request-standard")
+    public String handleStandardRequest(@RequestParam("documentType") String documentType) {
+        // Process standard document request (e.g., save to database or notify admin)
+        System.out.println("Standard Document Requested: " + documentType);
+        return "redirect:/doctorant/document-requests?success";
+    }
+
+    // Handle exceptional document requests
+    @PostMapping("/doctorant/request-exceptional")
+    public String handleExceptionalRequest(
+            @RequestParam("exceptionalDocumentType") String exceptionalDocumentType,
+            @RequestParam("justification") String justification,
+            @RequestParam("attachment") MultipartFile attachment) {
+        // Process exceptional document request (e.g., save to database or notify admin)
+        System.out.println("Exceptional Document Requested: " + exceptionalDocumentType);
+        System.out.println("Justification: " + justification);
+        System.out.println("Attachment: " + attachment.getOriginalFilename());
+        return "redirect:/doctorant/document-requests?success";
     }
 }

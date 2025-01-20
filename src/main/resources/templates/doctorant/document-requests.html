@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demandes de documents</title>
+  <style>
+    :root {
+      --primary-color: #B4197D;
+      --primary-light: #d81b90;
+      --secondary-color: #1A237E;
+      --background-start: #f8f9fe;
+      --background-end: #e8eaf6;
+      --input-background: #ffffff;
+      --text-dark: #2c3e50;
+      --text-light: #ffffff;
+      --shadow-color: rgba(26, 35, 126, 0.1);
+      --border-color: #e1e8f0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--background-start), var(--background-end));
+      padding: 20px;
+    }
+
+    .container {
+      background: var(--input-background);
+      padding: 2.5rem;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px var(--shadow-color),
+      0 2px 10px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 800px;
+      margin: 2rem auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .accent-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    h1 {
+      color: var(--text-dark);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+      font-weight: 600;
+      position: relative;
+      padding-bottom: 1rem;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 2px;
+    }
+
+    h2 {
+      color: var(--text-dark);
+      margin: 2rem 0 1.5rem;
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .form-section {
+      background: var(--input-background);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      color: var(--text-dark);
+      margin-bottom: 0.8rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    select,
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 1rem 1.2rem;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      background: var(--input-background);
+      color: var(--text-dark);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    select:focus,
+    input[type="text"]:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 4px rgba(180, 25, 125, 0.1);
+    }
+
+    input[type="file"] {
+      display: block;
+      padding: 1rem 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+      color: var(--text-light);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(180, 25, 125, 0.3);
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 2rem;
+      color: var(--text-dark);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: var(--primary-color);
+      transform: translateX(-5px);
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 2rem;
+        margin: 1rem;
+      }
+
+      h1 {
+        font-size: 1.75rem;
+      }
+
+      h2 {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="accent-border"></div>
+  <h1>Demandes de Documents</h1>
+
+  <!-- Standard Documents Section -->
+  <div class="form-section">
+    <h2>Documents Standards</h2>
+    <form th:action="@{/doctorant/request-standard}" method="post">
+      <div class="form-group">
+        <label for="document-type">Type de Document</label>
+        <select id="document-type" name="documentType">
+          <option value="attestation_inscription">Attestation d'inscription</option>
+          <option value="diplome">Diplôme</option>
+          <option value="releve_notes">Relevé de notes</option>
+        </select>
+      </div>
+      <button type="submit">Demander</button>
+    </form>
+  </div>
+
+  <!-- Exceptional Documents Section -->
+  <div class="form-section">
+    <h2>Documents Exceptionnels</h2>
+    <form th:action="@{/doctorant/request-exceptional}" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <label for="exceptional-document-type">Type de Document</label>
+        <input type="text" id="exceptional-document-type" name="exceptionalDocumentType"
+               placeholder="Nom du document" required>
+      </div>
+
+      <div class="form-group">
+        <label for="justification">Justification</label>
+        <textarea id="justification" name="justification"
+                  placeholder="Expliquez votre demande..." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="attachment">Pièce Jointe</label>
+        <input type="file" id="attachment" name="attachment" required>
+      </div>
+
+      <button type="submit">Envoyer Demande</button>
+    </form>
+  </div>
+
+  <a th:href="@{/doctorant/dashboard}" class="back-link">← Retour au tableau de bord</a>
+</div>
+</body>
+</html>
