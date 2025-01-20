@@ -33,6 +33,9 @@ public class DoctorantController {
     @Autowired
     private PatentRepository patentRepository;
 
+    @Autowired
+    private ClaimRepository claimRepository;
+
     // Dashboard view for a logged-in Doctorant
     @GetMapping("/doctorant/dashboard")
     public String doctorantDashboard(Model model) {
@@ -150,5 +153,18 @@ public class DoctorantController {
         Patent newPatent = new Patent(title, date, description);
         patentRepository.save(newPatent);
         return "redirect:/doctorant/academic-data?success";
+    }
+    // Show the claims page
+    @GetMapping("/doctorant/claims")
+    public String showClaimsPage(Model model) {
+        model.addAttribute("claim", new Claim()); // Add a new Claim object for the form
+        return "doctorant/claims";
+    }
+
+    // Handle claim submission
+    @PostMapping("/doctorant/claims")
+    public String submitClaim(@ModelAttribute Claim claim) {
+        claimRepository.save(claim); // Save the claim to the database
+        return "redirect:/doctorant/claims?success";
     }
 }
