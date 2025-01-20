@@ -1,7 +1,7 @@
 package com.ensem.gestiondoctorants.controller;
 
-import com.ensem.gestiondoctorants.model.Doctorant;
-import com.ensem.gestiondoctorants.repository.DoctorantRepository;
+import com.ensem.gestiondoctorants.model.*;
+import com.ensem.gestiondoctorants.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +20,18 @@ public class DoctorantController {
 
     @Autowired
     private DoctorantRepository doctorantRepository;
+
+    @Autowired
+    private FormationRepository formationRepository;
+
+    @Autowired
+    private ConferenceRepository conferenceRepository;
+
+    @Autowired
+    private ArticleRepository articleRepository;
+
+    @Autowired
+    private PatentRepository patentRepository;
 
     // Dashboard view for a logged-in Doctorant
     @GetMapping("/doctorant/dashboard")
@@ -93,5 +105,50 @@ public class DoctorantController {
         System.out.println("Justification: " + justification);
         System.out.println("Attachment: " + attachment.getOriginalFilename());
         return "redirect:/doctorant/document-requests?success";
+    }
+    // Display academic data input page
+    @GetMapping("/doctorant/academic-data")
+    public String showAcademicDataPage() {
+        return "doctorant/academic-data";
+    }
+
+    // Save formation
+    @PostMapping("/doctorant/save-formation")
+    public String saveFormation(@RequestParam("formation") String formation,
+                                @RequestParam("date") String date,
+                                @RequestParam("location") String location) {
+        Formation newFormation = new Formation(formation, date, location);
+        formationRepository.save(newFormation);
+        return "redirect:/doctorant/academic-data?success";
+    }
+
+    // Save conference
+    @PostMapping("/doctorant/save-conference")
+    public String saveConference(@RequestParam("conference") String conference,
+                                 @RequestParam("date") String date,
+                                 @RequestParam("location") String location) {
+        Conference newConference = new Conference(conference, date, location);
+        conferenceRepository.save(newConference);
+        return "redirect:/doctorant/academic-data?success";
+    }
+
+    // Save article
+    @PostMapping("/doctorant/save-article")
+    public String saveArticle(@RequestParam("title") String title,
+                              @RequestParam("journal") String journal,
+                              @RequestParam("date") String date) {
+        Article newArticle = new Article(title, journal, date);
+        articleRepository.save(newArticle);
+        return "redirect:/doctorant/academic-data?success";
+    }
+
+    // Save patent
+    @PostMapping("/doctorant/save-patent")
+    public String savePatent(@RequestParam("title") String title,
+                             @RequestParam("date") String date,
+                             @RequestParam("description") String description) {
+        Patent newPatent = new Patent(title, date, description);
+        patentRepository.save(newPatent);
+        return "redirect:/doctorant/academic-data?success";
     }
 }
