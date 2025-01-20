@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Doctorant</title>
+    <style>
+        :root {
+            --primary-color: #B4197D;
+            --primary-light: #d81b90;
+            --secondary-color: #1A237E;
+            --background-start: #f8f9fe;
+            --background-end: #e8eaf6;
+            --input-background: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --shadow-color: rgba(26, 35, 126, 0.1);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            display: flex;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--input-background);
+            box-shadow: 2px 0 10px var(--shadow-color);
+            padding: 2rem 1rem;
+            height: 100vh;
+            position: fixed;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--background-end);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo {
+            height: 50px;
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .dashboard-container {
+            background: var(--input-background);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px var(--shadow-color),
+            0 2px 10px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accent-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        h1 {
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .info-section {
+            background: var(--input-background);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 2px solid #e1e8f0;
+        }
+
+        .info-section h2 {
+            color: var(--text-dark);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--background-end);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .info-item {
+            margin-bottom: 1rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+            padding: 0.5rem;
+            background-color: var(--background-start);
+            border-radius: 6px;
+        }
+
+        .nav-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .nav-list li {
+            margin-bottom: 0.75rem;
+        }
+
+        .nav-list a {
+            display: block;
+            padding: 1rem;
+            background: var(--input-background);
+            color: var(--text-dark);
+            text-decoration: none;
+            border-radius: 12px;
+            border: 2px solid #e1e8f0;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-list a:hover {
+            border-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(180, 25, 125, 0.1);
+        }
+
+        .logout-link {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--text-light);
+            text-align: center;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .dashboard-container {
+                padding: 1.5rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<button class="mobile-nav-toggle" onclick="toggleSidebar()">☰</button>
+
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo-container">
+            <img src="/api/placeholder/140/70" alt="UH2C Logo" class="logo">
+            <img src="/api/placeholder/140/70" alt="ENSEM Logo" class="logo">
+        </div>
+        <h2>Menu principal</h2>
+    </div>
+    <nav>
+        <ul class="nav-list">
+            <li>
+                <a th:href="@{/doctorant/profile}" class="btn btn-primary">Consulter vos informations personnelles</a>
+            </li>
+            <li>
+                <a th:href="@{/doctorant/academic-data}">Saisir et consulter vos données académiques</a>
+            </li>
+            <li>
+                <a th:href="@{/doctorant/document-requests}">Effectuer une demande de documents</a>
+            </li>
+            <li>
+                <a th:href="@{/doctorant/progress}">Voir l'avancement de vos étapes de soutenance</a>
+            </li>
+            <li>
+                <a th:href="@{/doctorant/claims}">Signaler une erreur ou soumettre une réclamation</a>
+            </li>
+        </ul>
+        <a th:href="@{/logout}" class="logout-link">Déconnexion</a>
+    </nav>
+</aside>
+
+<main class="main-content">
+    <div class="dashboard-container">
+        <div class="accent-border"></div>
+        <h1>Informations Personnelles</h1>
+
+        <div class="info-section">
+            <h2>Informations d'Identification</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Nom</div>
+                    <div class="info-value" th:text="${doctorant.nom != null ? doctorant.nom : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Prénom</div>
+                    <div class="info-value" th:text="${doctorant.prenom != null ? doctorant.prenom : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CNE</div>
+                    <div class="info-value" th:text="${doctorant.cne != null ? doctorant.cne : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">CIN</div>
+                    <div class="info-value" th:text="${doctorant.cin != null ? doctorant.cin : 'Non renseigné'}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Informations Académiques</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Formation Doctorale</div>
+                    <div class="info-value" th:text="${doctorant.formationDoctorale != null ? doctorant.formationDoctorale : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Titre de Thèse</div>
+                    <div class="info-value" th:text="${doctorant.titreThese != null ? doctorant.titreThese : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Directeur de Thèse</div>
+                    <div class="info-value" th:text="${doctorant.directeurThese != null ? doctorant.directeurThese : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Cotutelle</div>
+                    <div class="info-value" th:text="${doctorant.cotutelle != null ? (doctorant.cotutelle ? 'Oui' : 'Non') : 'Non renseigné'}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <h2>Contact</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value" th:text="${doctorant.email != null ? doctorant.email : 'Non renseigné'}"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Téléphone</div>
+                    <div class="info-value" th:text="${doctorant.numTel != null ? doctorant.numTel : 'Non renseigné'}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('active');
+    }
+</script>
+</body>
+</html>
