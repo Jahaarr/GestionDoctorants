@@ -1,16 +1,10 @@
-package com.ensem.gestiondoctorants.model;
+package com.ensem.gestiondoctorants.dto;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
 
-@Entity
 @Data
-public class Doctorant {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class DoctorantProfileDTO {
     private String cne;
     private String nom;
     private String prenom;
@@ -40,13 +34,5 @@ public class Doctorant {
     private String codirecteurThese;
     private Boolean cotutelle;
     private Boolean bourse;
-
-    @Temporal(TemporalType.DATE)
     private Date dateNaissance;
-
-    @Column(nullable = false, length = 20)
-    private String role = "DOCTORANT";
-
-    @Column(nullable = false)
-    private boolean firstLogin = true;  // New field for first login check
 }
