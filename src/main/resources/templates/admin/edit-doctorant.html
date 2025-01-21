@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Doctorant</title>
+    <style>
+        :root {
+            --primary-color: #B4197D;
+            --primary-light: #d81b90;
+            --secondary-color: #1A237E;
+            --background-start: #f8f9fe;
+            --background-end: #e8eaf6;
+            --input-background: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #ffffff;
+            --shadow-color: rgba(26, 35, 126, 0.1);
+            --border-color: #e1e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            padding: 20px;
+        }
+
+        .container {
+            background: var(--input-background);
+            padding: 2.5rem;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px var(--shadow-color),
+            0 2px 10px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 800px;
+            margin: 2rem auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .accent-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        h1 {
+            color: var(--text-dark);
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
+        }
+
+        .form-content {
+            background: var(--input-background);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            display: block;
+            color: var(--text-dark);
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            background: var(--input-background);
+            color: var(--text-dark);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(180, 25, 125, 0.1);
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            color: var(--text-light);
+        }
+
+        .btn-secondary {
+            background: var(--text-dark);
+            color: var(--text-light);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(180, 25, 125, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+
+            .buttons-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="accent-border"></div>
+    <h1>Modifier Doctorant</h1>
+
+    <div class="form-content">
+        <form th:action="@{/admin/doctorant/edit}" th:object="${doctorant}" method="post">
+            <input type="hidden" th:field="*{id}" />
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="cne">CNE</label>
+                    <input type="text" id="cne" th:field="*{cne}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="codeApogee">Code Apogée</label>
+                    <input type="text" id="codeApogee" th:field="*{codeApogee}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="nom">Nom</label>
+                    <input type="text" id="nom" th:field="*{nom}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="prenom">Prénom</label>
+                    <input type="text" id="prenom" th:field="*{prenom}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="cin">CIN</label>
+                    <input type="text" id="cin" th:field="*{cin}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" th:field="*{email}" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="numTel">Numéro de Téléphone</label>
+                    <input type="text" id="numTel" th:field="*{numTel}" />
+                </div>
+
+                <div class="form-group">
+                    <label for="sexe">Sexe</label>
+                    <select id="sexe" th:field="*{sexe}">
+                        <option value="M" th:selected="${doctorant.sexe == 'M'}">Masculin</option>
+                        <option value="F" th:selected="${doctorant.sexe == 'F'}">Féminin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateNaissance">Date de Naissance</label>
+                    <input type="date" id="dateNaissance" th:field="*{dateNaissance}" required />
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+                <a th:href="@{/admin/manage-doctorants}" class="btn btn-secondary">Annuler</a>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
