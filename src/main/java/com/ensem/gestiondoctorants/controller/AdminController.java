@@ -66,5 +66,25 @@ public class AdminController {
         doctorantRepository.deleteById(id);
         return "redirect:/admin/manage-doctorants";
     }
+    @GetMapping("/admin/edit-documents")
+    public String showEditDocumentsPage(Model model) {
+        // Add default data or settings if necessary
+        model.addAttribute("documentTypes", List.of("Attestation", "Carte", "Diplôme", "Lettre d'Invitation"));
+        return "admin/edit-documents";
+    }
+    @PostMapping("/admin/save-document-template")
+    public String saveDocumentTemplate(
+            @RequestParam("documentType") String documentType,
+            @RequestParam("templateContent") String templateContent) {
+        // Log or save the template details (this could be saved in the database or a file)
+        System.out.println("Document Type: " + documentType);
+        System.out.println("Template Content: " + templateContent);
+
+        // Save the template to a database or file (example code for database):
+        // documentTemplateService.saveTemplate(documentType, templateContent);
+
+        return "redirect:/admin/edit-documents?success"; // Redirect back to the edit page with a success message
+    }
+
 
 }
