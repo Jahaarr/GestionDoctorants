@@ -43,34 +43,82 @@ public class DoctorantController {
     // Redirect to registration if doctorant has incomplete data
     @GetMapping("/doctorant/first-login")
     public String firstLogin(Model model) {
+        // Get current authenticated user's CNE
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String cne = authentication.getName();
 
         // Fetch the doctorant by CNE
         Doctorant doctorant = doctorantRepository.findByCne(cne);
         if (doctorant == null) {
+            // If doctorant doesn't exist, create new one
             doctorant = new Doctorant();
-            doctorant.setCne(cne); // Pre-fill CNE
+            doctorant.setCne(cne);
+            doctorant.setFirstLogin(true);
+            doctorantRepository.save(doctorant);
         }
 
-        model.addAttribute("doctorant", doctorant);
-
-        // Check if profile information is already filled
-        if (doctorant.getNom() != null && doctorant.getPrenom() != null) {
-            return "redirect:/doctorant/dashboard";
+        // Check firstLogin flag
+        if (doctorant.isFirstLogin()) {
+            model.addAttribute("doctorant", doctorant);
+            return "doctorant/registration"; // Show the initial setup form
+        } else {
+            return "redirect:/doctorant/dashboard"; // Redirect to dashboard if not first login
         }
-
-        return "doctorant/registration"; // Show registration form
     }
 
-
     @PostMapping("/doctorant/first-login")
-    public String processRegistration(@ModelAttribute Doctorant doctorant) {
-        // Save the Doctorant's information to the database
-        doctorantRepository.save(doctorant);
+    public String processFirstLogin(@ModelAttribute Doctorant doctorant) {
+        // Get current authenticated user's CNE
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String cne = authentication.getName();
 
-        // Redirect to the profile page after successful registration
-        return "redirect:/doctorant/profile";
+        // Fetch existing doctorant
+        Doctorant existingDoctorant = doctorantRepository.findByCne(cne);
+        if (existingDoctorant != null) {
+            // Keep the original CNE and CIN
+            String originalCin = existingDoctorant.getCin();
+            String originalCne = existingDoctorant.getCne();
+
+            // Update all fields
+            existingDoctorant.setNom(doctorant.getNom());
+            existingDoctorant.setPrenom(doctorant.getPrenom());
+            existingDoctorant.setCin(originalCin); // Keep original CIN
+            existingDoctorant.setCne(originalCne); // Keep original CNE
+            existingDoctorant.setEmail(doctorant.getEmail());
+            existingDoctorant.setNumTel(doctorant.getNumTel());
+            existingDoctorant.setCodeApogee(doctorant.getCodeApogee());
+            existingDoctorant.setSexe(doctorant.getSexe());
+            existingDoctorant.setVilleNaissance(doctorant.getVilleNaissance());
+            existingDoctorant.setNomArab(doctorant.getNomArab());
+            existingDoctorant.setPrenomArab(doctorant.getPrenomArab());
+            existingDoctorant.setVilleNaissanceArab(doctorant.getVilleNaissanceArab());
+            existingDoctorant.setAnneeUniv(doctorant.getAnneeUniv());
+            existingDoctorant.setCodEtp(doctorant.getCodEtp());
+            existingDoctorant.setCodVrsVet(doctorant.getCodVrsVet());
+            existingDoctorant.setCodDip(doctorant.getCodDip());
+            existingDoctorant.setCodVrsVdi(doctorant.getCodVrsVdi());
+            existingDoctorant.setNbrInsCyc(doctorant.getNbrInsCyc());
+            existingDoctorant.setNbrInsDip(doctorant.getNbrInsDip());
+            existingDoctorant.setMentionBac(doctorant.getMentionBac());
+            existingDoctorant.setAnneeBac(doctorant.getAnneeBac());
+            existingDoctorant.setLibDip(doctorant.getLibDip());
+            existingDoctorant.setLibDipArb(doctorant.getLibDipArb());
+            existingDoctorant.setFormationDoctorale(doctorant.getFormationDoctorale());
+            existingDoctorant.setTitreThese(doctorant.getTitreThese());
+            existingDoctorant.setDirecteurThese(doctorant.getDirecteurThese());
+            existingDoctorant.setCodirecteurThese(doctorant.getCodirecteurThese());
+            existingDoctorant.setCotutelle(doctorant.getCotutelle());
+            existingDoctorant.setBourse(doctorant.getBourse());
+            existingDoctorant.setDateNaissance(doctorant.getDateNaissance());
+
+            // Set firstLogin to false as the profile is now complete
+            existingDoctorant.setFirstLogin(false);
+
+            // Save the updated doctorant
+            doctorantRepository.save(existingDoctorant);
+        }
+
+        return "redirect:/doctorant/dashboard";
     }
 
 
