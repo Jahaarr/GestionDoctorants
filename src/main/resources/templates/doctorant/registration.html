@@ -171,14 +171,15 @@
     <div class="form-content">
         <form th:action="@{/doctorant/first-login}" th:object="${doctorant}" method="post">
             <div class="form-grid">
+                <!-- Existing fields -->
                 <div class="form-group">
                     <label for="cne">CNE</label>
                     <input type="text" id="cne" name="cne" th:value="${doctorant.cne}" readonly>
                 </div>
 
                 <div class="form-group">
-                    <label for="code_apogee">Code Apogée</label>
-                    <input type="text" id="code_apogee" name="codeApogee">
+                    <label for="date_naissance">Date de Naissance</label>
+                    <input type="date" id="date_naissance" name="dateNaissance" required>
                 </div>
 
                 <div class="form-group">
@@ -192,8 +193,127 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="date_naissance">Date de Naissance</label>
-                    <input type="date" id="date_naissance" name="dateNaissance" required>
+                    <label for="code_apogee">Code Apogée</label>
+                    <input type="text" id="code_apogee" name="codeApogee">
+                </div>
+
+                <!-- Additional fields -->
+                <div class="form-group">
+                    <label for="sexe">Sexe</label>
+                    <select id="sexe" name="sexe">
+                        <option value="M">Masculin</option>
+                        <option value="F">Féminin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="ville_naissance">Ville de Naissance</label>
+                    <input type="text" id="ville_naissance" name="villeNaissance">
+                </div>
+
+                <div class="form-group">
+                    <label for="nom_arab">Nom (Arabe)</label>
+                    <input type="text" id="nom_arab" name="nomArab">
+                </div>
+
+                <div class="form-group">
+                    <label for="prenom_arab">Prenom (Arabe)</label>
+                    <input type="text" id="prenom_arab" name="prenomArab">
+                </div>
+
+                <div class="form-group">
+                    <label for="cin">CIN</label>
+                    <input type="text" id="cin" name="cin" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="ville_naissance_arab">Ville de Naissance (Arabe)</label>
+                    <input type="text" id="ville_naissance_arab" name="villeNaissanceArab">
+                </div>
+
+                <div class="form-group">
+                    <label for="annee_univ">Année Universitaire</label>
+                    <input type="text" id="annee_univ" name="anneeUniv">
+                </div>
+
+                <div class="form-group">
+                    <label for="cod_etp">Code ETP</label>
+                    <input type="text" id="cod_etp" name="codEtp">
+                </div>
+
+                <div class="form-group">
+                    <label for="cod_vrs_vet">Code VRS VET</label>
+                    <input type="text" id="cod_vrs_vet" name="codVrsVet">
+                </div>
+
+                <div class="form-group">
+                    <label for="cod_dip">Code DIP</label>
+                    <input type="text" id="cod_dip" name="codDip">
+                </div>
+
+                <div class="form-group">
+                    <label for="cod_vrs_vdi">Code VRS VDI</label>
+                    <input type="text" id="cod_vrs_vdi" name="codVrsVdi">
+                </div>
+
+                <div class="form-group">
+                    <label for="nbr_ins_cyc">Nombre d'Inscriptions Cycle</label>
+                    <input type="number" id="nbr_ins_cyc" name="nbrInsCyc">
+                </div>
+
+                <div class="form-group">
+                    <label for="nbr_ins_dip">Nombre d'Inscriptions Diplôme</label>
+                    <input type="number" id="nbr_ins_dip" name="nbrInsDip">
+                </div>
+
+                <div class="form-group">
+                    <label for="mention_bac">Mention Bac</label>
+                    <input type="text" id="mention_bac" name="mentionBac">
+                </div>
+
+                <div class="form-group">
+                    <label for="annee_bac">Année Bac</label>
+                    <input type="text" id="annee_bac" name="anneeBac">
+                </div>
+
+                <div class="form-group">
+                    <label for="lib_dip">Libellé Diplôme</label>
+                    <input type="text" id="lib_dip" name="libDip">
+                </div>
+
+                <div class="form-group">
+                    <label for="lib_dip_arb">Libellé Diplôme (Arabe)</label>
+                    <input type="text" id="lib_dip_arb" name="libDipArb">
+                </div>
+
+                <div class="form-group">
+                    <label for="num_tel">Numéro de Téléphone</label>
+                    <input type="text" id="num_tel" name="numTel">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="formation_doctorale">Formation Doctorale</label>
+                    <input type="text" id="formation_doctorale" name="formationDoctorale">
+                </div>
+
+                <div class="form-group">
+                    <label for="titre_these">Titre de Thèse</label>
+                    <input type="text" id="titre_these" name="titreThese">
+                </div>
+
+                <div class="form-group">
+                    <label for="directeur_these">Directeur de Thèse</label>
+                    <input type="text" id="directeur_these" name="directeurThese">
+                </div>
+
+                <div class="form-group">
+                    <label for="codirecteur_these">Co-Directeur de Thèse</label>
+                    <input type="text" id="codirecteur_these" name="codirecteurThese">
                 </div>
 
                 <div class="form-group">
