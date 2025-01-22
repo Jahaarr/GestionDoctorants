@@ -5,6 +5,7 @@ import com.ensem.gestiondoctorants.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -39,6 +39,40 @@ public class DoctorantController {
 
     @Autowired
     private ProgressRepository progressRepository;
+
+    // Redirect to registration if doctorant has incomplete data
+    @GetMapping("/doctorant/first-login")
+    public String firstLogin(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String cne = authentication.getName();
+
+        // Fetch the doctorant by CNE
+        Doctorant doctorant = doctorantRepository.findByCne(cne);
+        if (doctorant == null) {
+            doctorant = new Doctorant();
+            doctorant.setCne(cne); // Pre-fill CNE
+        }
+
+        model.addAttribute("doctorant", doctorant);
+
+        // Check if profile information is already filled
+        if (doctorant.getNom() != null && doctorant.getPrenom() != null) {
+            return "redirect:/doctorant/dashboard";
+        }
+
+        return "doctorant/registration"; // Show registration form
+    }
+
+
+    @PostMapping("/doctorant/first-login")
+    public String processRegistration(@ModelAttribute Doctorant doctorant) {
+        // Save the Doctorant's information to the database
+        doctorantRepository.save(doctorant);
+
+        // Redirect to the profile page after successful registration
+        return "redirect:/doctorant/profile";
+    }
+
 
     // Dashboard view for a logged-in Doctorant
     @GetMapping("/doctorant/dashboard")
@@ -80,13 +114,7 @@ public class DoctorantController {
     }
 
 
-    // Process the registration form submission
-    @PostMapping("/registration")
-    public String processRegistration(@ModelAttribute Doctorant doctorant) {
-        // Save the doctorant's information to the database
-        doctorantRepository.save(doctorant);
-        return "redirect:/doctorant/dashboard"; // Redirect to the dashboard after registration
-    }
+
     // Show document requests page
     @GetMapping("/doctorant/document-requests")
     public String showDocumentRequestsPage() {

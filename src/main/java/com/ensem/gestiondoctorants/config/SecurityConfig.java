@@ -30,8 +30,8 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login") // Custom login page
-                        .defaultSuccessUrl("/default", true) // Redirect based on role
-                        .permitAll() // Allow access to the login page
+                        .defaultSuccessUrl("/doctorant/first-login", true) // Redirect after successful login
+                        .permitAll() // Allow everyone to access the login page
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout") // URL for logout
