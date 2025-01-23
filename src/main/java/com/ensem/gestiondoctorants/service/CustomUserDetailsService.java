@@ -41,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
             }
             return User.builder()
                     .username(doctorant.getCne())
-                    .password(doctorant.getCin()) // {noop} for plain-text CIN password
+                    .password(doctorant.getPassword())  // {noop} for plain-text CIN password
                     .roles(doctorant.getRole()) // Do NOT prefix ROLE_ here
                     .build();
         }

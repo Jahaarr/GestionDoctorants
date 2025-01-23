@@ -195,12 +195,74 @@
         text-align: center;
       }
     }
+    .add-section {
+      background: var(--table-header-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      border: 2px solid var(--border-color);
+    }
+
+    .add-form {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .form-group input {
+      padding: 0.8rem;
+      border: 2px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    .add-btn {
+      grid-column: span 2;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+      color: var(--text-light);
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(26, 35, 126, 0.2);
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="accent-border"></div>
   <h1>Gestion des Doctorants</h1>
+
+  <div class="add-section">
+    <form th:action="@{/admin/add-doctorant}" method="post" class="add-form">
+      <div class="form-group">
+        <label for="cin">CIN</label>
+        <input type="text" id="cin" name="cin" required>
+      </div>
+      <div class="form-group">
+        <label for="cne">CNE</label>
+        <input type="text" id="cne" name="cne" required>
+      </div>
+      <button type="submit" class="add-btn">Ajouter un Doctorant</button>
+    </form>
+  </div>
 
   <div class="table-container">
     <table>

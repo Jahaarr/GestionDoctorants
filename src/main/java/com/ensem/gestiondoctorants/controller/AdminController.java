@@ -4,13 +4,15 @@ import com.ensem.gestiondoctorants.model.Doctorant;
 import com.ensem.gestiondoctorants.repository.DoctorantRepository;
 import com.ensem.gestiondoctorants.service.DataImportExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.util.List;
+import java.time.LocalDate;
+
 
 @Controller
 public class AdminController {
@@ -20,6 +22,7 @@ public class AdminController {
 
     @Autowired
     private DoctorantRepository doctorantRepository;
+
     @GetMapping("/admin/dashboard")
     public String adminDashboard() {
         return "admin/dashboard";
@@ -41,13 +44,34 @@ public class AdminController {
         }
         return "admin/import-export";
     }
+
     @GetMapping("/admin/manage-doctorants")
     public String manageDoctorants(Model model) {
-        // Fetch all doctorants from the database
         List<Doctorant> doctorants = doctorantRepository.findAll();
         model.addAttribute("doctorants", doctorants);
-        return "admin/manage-doctorants"; // Return the Thymeleaf template for managing doctorants
+        return "admin/manage-doctorants";
     }
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @PostMapping("/admin/add-doctorant")
+    public String addDoctorant(@RequestParam String cin, @RequestParam String cne) {
+        if (doctorantRepository.findByCin(cin) != null || doctorantRepository.findByCne(cne) != null) {
+            return "redirect:/admin/manage-doctorants?error=exists";
+        }
+
+        Doctorant doctorant = new Doctorant();
+        doctorant.setCin(cin);
+        doctorant.setPassword(passwordEncoder.encode(cin));
+        doctorant.setCne(cne);
+        doctorant.setFirstLogin(true);
+        doctorant.setRole("DOCTORANT");
+        doctorant.setDateNaissance(LocalDate.of(1900, 1, 1));
+        doctorantRepository.save(doctorant);
+
+        return "redirect:/admin/manage-doctorants?success=added";
+    }
+
     @GetMapping("/admin/doctorant/edit/{id}")
     public String editDoctorant(@PathVariable Long id, Model model) {
         Doctorant doctorant = doctorantRepository.findById(id)
@@ -55,36 +79,49 @@ public class AdminController {
         model.addAttribute("doctorant", doctorant);
         return "admin/edit-doctorant";
     }
+
     @PostMapping("/admin/doctorant/edit")
     public String updateDoctorant(@ModelAttribute Doctorant doctorant) {
-        doctorantRepository.save(doctorant); // Save the updated doctorant details
-        return "redirect:/admin/manage-doctorants"; // Redirect to the manage doctorants page
+        Doctorant existingDoctorant = doctorantRepository.findById(doctorant.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Doctorant non trouvé"));
+
+        // Update fields while preserving original CIN and CNE
+        String originalCin = existingDoctorant.getCin();
+        String originalCne = existingDoctorant.getCne();
+
+        existingDoctorant.setNom(doctorant.getNom());
+        existingDoctorant.setPrenom(doctorant.getPrenom());
+        existingDoctorant.setEmail(doctorant.getEmail());
+        existingDoctorant.setNumTel(doctorant.getNumTel());
+        existingDoctorant.setDateNaissance(doctorant.getDateNaissance());
+        existingDoctorant.setSexe(doctorant.getSexe());
+
+        // Preserve original CIN and CNE
+        existingDoctorant.setCin(originalCin);
+        existingDoctorant.setCne(originalCne);
+
+        doctorantRepository.save(existingDoctorant);
+        return "redirect:/admin/manage-doctorants?success=updated";
     }
 
     @GetMapping("/admin/doctorant/delete/{id}")
     public String deleteDoctorant(@PathVariable Long id) {
         doctorantRepository.deleteById(id);
-        return "redirect:/admin/manage-doctorants";
+        return "redirect:/admin/manage-doctorants?success=deleted";
     }
+
     @GetMapping("/admin/edit-documents")
     public String showEditDocumentsPage(Model model) {
-        // Add default data or settings if necessary
         model.addAttribute("documentTypes", List.of("Attestation", "Carte", "Diplôme", "Lettre d'Invitation"));
         return "admin/edit-documents";
     }
+
     @PostMapping("/admin/save-document-template")
     public String saveDocumentTemplate(
             @RequestParam("documentType") String documentType,
             @RequestParam("templateContent") String templateContent) {
-        // Log or save the template details (this could be saved in the database or a file)
         System.out.println("Document Type: " + documentType);
         System.out.println("Template Content: " + templateContent);
-
-        // Save the template to a database or file (example code for database):
-        // documentTemplateService.saveTemplate(documentType, templateContent);
-
-        return "redirect:/admin/edit-documents?success"; // Redirect back to the edit page with a success message
+        return "redirect:/admin/edit-documents?success";
     }
-
-
 }

@@ -14,7 +14,8 @@ public class Doctorant {
     @Column(unique = true, nullable = false)
     private String cne;
 
-
+    @Column(nullable = false)
+    private String password;
 
     private String nom;
     private String prenom;
@@ -53,4 +54,12 @@ public class Doctorant {
 
     @Column(nullable = false)
     private boolean firstLogin = true;  // New field for first login check
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
