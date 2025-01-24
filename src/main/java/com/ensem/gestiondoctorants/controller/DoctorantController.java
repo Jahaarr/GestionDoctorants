@@ -141,21 +141,14 @@ public class DoctorantController {
     public String viewProfile(Model model) {
         // Get the authenticated user
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUserEmail = authentication.getName();
+        String cne = authentication.getName();
 
         // Find the doctorant by email
-        Doctorant doctorant = doctorantRepository.findByEmail(currentUserEmail);
+        Doctorant doctorant = doctorantRepository.findByCne(cne);
 
         // For debugging purposes
-        System.out.println("Current user email: " + currentUserEmail);
-        System.out.println("Found doctorant: " + (doctorant != null ? doctorant.getEmail() : "null"));
-
-        if (doctorant == null) {
-            // For development, you might want to use a sample doctorant
-            doctorant = doctorantRepository.findAll().stream().findFirst().orElse(new Doctorant());
-            // You might also want to log this situation
-            System.out.println("Using fallback doctorant data");
-        }
+        System.out.println("Current user CNE: " + cne);
+        System.out.println("Found doctorant: " + doctorant);
 
         model.addAttribute("doctorant", doctorant);
         return "doctorant/profile";
