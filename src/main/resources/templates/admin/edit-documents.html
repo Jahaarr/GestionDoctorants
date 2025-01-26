@@ -206,7 +206,8 @@
     <form th:action="@{/admin/save-document-template}" method="post">
       <div class="form-group">
         <label for="documentType">Type de Document</label>
-        <select id="documentType" name="documentType" required>
+        <select id="documentType" name="documentType" onchange="loadTemplate()" required>
+          <option value="">Sélectionner un type</option>
           <option th:each="type : ${documentTypes}"
                   th:value="${type}"
                   th:text="${type}">
@@ -214,21 +215,49 @@
         </select>
       </div>
 
-      <div class="form-group">
-        <label for="templateContent">Contenu du Modèle</label>
+      <div class="form-group template-content">
+        <label for="templateContent">Modèle du Document</label>
         <textarea id="templateContent"
                   name="templateContent"
                   required
-                  placeholder="Entrez le contenu du modèle ici...">
-                    </textarea>
+                  placeholder="Le modèle du document s'affichera ici..."></textarea>
       </div>
 
       <div class="buttons-container">
         <button type="submit" class="btn btn-primary">Enregistrer</button>
+        <button type="button" onclick="downloadTemplate()" class="btn btn-secondary">Télécharger</button>
         <a th:href="@{/admin/dashboard}" class="btn btn-secondary">Annuler</a>
       </div>
     </form>
   </div>
 </div>
+<script>
+  function loadTemplate() {
+    const type = document.getElementById('documentType').value;
+    if(!type) return;
+
+    fetch(`/admin/get-template/${type}`)
+            .then(response => response.text())
+            .then(template => {
+              document.getElementById('templateContent').value = template;
+            })
+            .catch(error => console.error('Error loading template:', error));
+  }
+
+  function downloadTemplate() {
+    const type = document.getElementById('documentType').value;
+    const content = document.getElementById('templateContent').value;
+
+    if(!content) return;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `template_${type}.txt`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  }
+</script>
 </body>
 </html>

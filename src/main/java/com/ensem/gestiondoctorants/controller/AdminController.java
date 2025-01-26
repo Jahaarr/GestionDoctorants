@@ -1,8 +1,10 @@
 package com.ensem.gestiondoctorants.controller;
 
 import com.ensem.gestiondoctorants.model.Doctorant;
+import com.ensem.gestiondoctorants.model.DocumentTemplate;
 import com.ensem.gestiondoctorants.repository.DoctorantRepository;
 import com.ensem.gestiondoctorants.service.DataImportExportService;
+import com.ensem.gestiondoctorants.service.DocumentTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -110,18 +112,29 @@ public class AdminController {
         return "redirect:/admin/manage-doctorants?success=deleted";
     }
 
+    @Autowired
+    private DocumentTemplateService documentTemplateService;
+
     @GetMapping("/admin/edit-documents")
     public String showEditDocumentsPage(Model model) {
-        model.addAttribute("documentTypes", List.of("Attestation", "Carte", "Diplôme", "Lettre d'Invitation"));
+        List<DocumentTemplate> templates = documentTemplateService.getAllTemplates();
+        model.addAttribute("documentTypes", List.of("Attestation d'inscription", "Diplôme", "Attestation de réussite"));
+        model.addAttribute("templates", templates);
         return "admin/edit-documents";
+    }
+
+    @GetMapping("/admin/get-template/{type}")
+    @ResponseBody
+    public String getDocumentTemplate(@PathVariable String type) {
+        return documentTemplateService.getTemplateContent(type);
     }
 
     @PostMapping("/admin/save-document-template")
     public String saveDocumentTemplate(
             @RequestParam("documentType") String documentType,
             @RequestParam("templateContent") String templateContent) {
-        System.out.println("Document Type: " + documentType);
-        System.out.println("Template Content: " + templateContent);
+
+        documentTemplateService.saveTemplate(documentType, templateContent);
         return "redirect:/admin/edit-documents?success";
     }
 }
